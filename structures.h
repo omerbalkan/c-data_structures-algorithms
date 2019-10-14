@@ -8,6 +8,13 @@ typedef struct {
 }matrix; 
 
 typedef struct {
+	int x; 
+	int y; 
+	int z; 
+	int*** values; 
+}prizma; 
+
+typedef struct {
 	int size; 
 	int count;  
 	int* arr; 
