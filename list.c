@@ -127,12 +127,70 @@ char* tolist(int count, ...){
 	va_end(params); 
 	return l; 
 }
+list* splice(list* l, int start, int size, int count, ...){
+	start = start < 0 ? 0 : start;
+	int stop = start + size;
+	stop = stop > l->count ? l->count : stop;
 
-// liste islemleri : 
-list* where(list* liste, int(*predicate)(int)){
-	list* result = new_list(); 
-	
+	list* result = new_list();
+	if (stop <= start)
+		return result;
+
+	int index = 0;
+	item* iter = l->head;
+	while (index < start-1){
+		iter = iter->next;
+		index++;
+	}
+	va_list params;
+	va_start(params, count);
+	int i = 0;
+
+	if (start == 0){
+		push(result, iter->value);
+		if (count > 0){
+			iter->value = (int)va_arg(params, int);
+			i = 1;
+		}
+		start++;
+	}
+	while (start < stop){
+		push(result, iter->next->value);
+		if (i < count){
+			iter->next->value = (int)va_arg(params, int);
+			i++;
+			iter = iter->next;
+		}
+		else{
+			item* temp = iter->next;
+			iter->next = iter->next->next;
+			iter = iter->next;
+			free(temp);
+			l->count--;
+		}
+		start++;
+	}
+	va_end(params);
+	return result;
 }
+list* slice(list* x, int start, int stop){
+	start = start < 0 ? 0 : start;
+	stop = stop > x->count ? x->count : stop;
+	list* result = new_list();
+	if (stop <= start)
+		return result;
+	int i = 0;
+	item* iter = x->head;
+	while (i++ < start){
+		iter = iter->next;
+	}
+	while (start < stop){
+		push(result, iter->value);
+		start++;
+	}
+	return result;
+} 
+
 
 
 
